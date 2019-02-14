@@ -2,6 +2,8 @@
 
 [![Coverage Status](https://coveralls.io/repos/mapbox/tilelive.js/badge.svg)](https://coveralls.io/r/mapbox/tilelive.js)
 
+> This repository is a fork of `mapbox/tilelive`, but for CGCS2000.
+
 - Tilelive is a module to help interactions between tilelive source modules.
 - A tilelive source is an interface implemented by node modules that deal with reading and writing map tiles.
 

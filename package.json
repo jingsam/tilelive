@@ -1,9 +1,9 @@
 {
-  "name": "tilelive",
+  "name": "@cgcs2000/tilelive",
   "version": "5.12.2",
   "main": "./lib/tilelive.js",
   "description": "API for various map tile backends",
-  "url": "http://github.com/mapbox/tilelive.js",
+  "url": "http://github.com/cgcs2000/tilelive",
   "keywords": [
     "map",
     "mapnik",
@@ -16,7 +16,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "http://github.com/mapbox/tilelive.js.git"
+    "url": "http://github.com/cgcs2000/tilelive.git"
   },
   "author": {
     "name": "Mapbox",
@@ -34,7 +34,7 @@
   "dependencies": {
     "minimist": "~0.2.0",
     "progress-stream": "~0.5.x",
-    "sphericalmercator": "~1.0.1",
+    "@cgcs2000/sphericalmercator": "~1.1.1",
     "queue-async": "~1.0.7"
   },
   "devDependencies": {
