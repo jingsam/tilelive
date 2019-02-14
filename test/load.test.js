@@ -1,8 +1,8 @@
 var test = require('tape');
 var assert = require('assert');
 var tilelive = require('../');
-tilelive.protocols['mbtiles:'] = require('mbtiles');
-tilelive.protocols['tilejson:'] = require('tilejson');
+tilelive.protocols['mbtiles:'] = require('@mapbox/mbtiles');
+tilelive.protocols['tilejson:'] = require('@mapbox/tilejson');
 
 var data = [
     {
@@ -45,7 +45,7 @@ var data = [
         version: '1.0.0',
         legend: null,
         minzoom: 0,
-        maxzoom: 22,
+        maxzoom: 30,
         center: null
     },
     {
@@ -135,11 +135,26 @@ var data = [
         version: '1.0.0',
         legend: null,
         minzoom: 0,
-        maxzoom: 22,
+        maxzoom: 30,
         bounds: [ -180, -85.05112877980659, 180, 85.05112877980659 ],
         center: null
     }
 ];
+
+test('loading: url without pathname', function(t) {
+    // Create a dummy protocol handler
+    tilelive.protocols['nopathname:'] = function NoPathNameSource(uri, callback) {
+        this.search = uri.search;
+        callback(undefined, this);
+    };
+    var searchStr = '?test=1';
+    tilelive.load('nopathname://' + searchStr, function(err, source) {
+        if (err) throw err;
+        t.equal(source.search, searchStr);
+        delete tilelive.protocols['nopathname:'];
+        t.end();
+    });
+});
 
 test('loading: no callback no fun', function(t) {
     t.throws(function() {

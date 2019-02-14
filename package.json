@@ -1,6 +1,6 @@
 {
   "name": "@cgcs2000/tilelive",
-  "version": "5.12.2",
+  "version": "6.0.0",
   "main": "./lib/tilelive.js",
   "description": "API for various map tile backends",
   "url": "http://github.com/cgcs2000/tilelive",
@@ -42,16 +42,16 @@
     "coveralls": "~2.11.1",
     "eslint": "^0.24.0",
     "istanbul": "~0.3.0",
-    "mbtiles": "~0.8.2",
+    "@mapbox/mbtiles": "~0.9.0",
     "stream-combiner": "^0.2.2",
     "tape": "2.13.3",
-    "tilejson": "~1.0.0"
+    "@mapbox/tilejson": "~1.0.4"
   },
   "bin": {
     "tilelive-copy": "./bin/tilelive-copy"
   },
   "engines": {
-    "node": ">= 0.10.0 < 5"
+    "node": ">=4"
   },
   "scripts": {
     "test": "eslint --no-eslintrc -c .eslintrc lib/*.js && tape test/*.test.js",

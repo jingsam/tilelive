@@ -8,7 +8,7 @@ var tilelive = require('../');
 var util = require('util');
 var concat = require('concat-stream');
 var combine = require('stream-combiner');
-var MBTiles = require('mbtiles');
+var MBTiles = require('@mapbox/mbtiles');
 //register protocols
 MBTiles.registerProtocols(tilelive);
 var crypto = require('crypto');
@@ -81,7 +81,7 @@ test('copy streams', function(t) {
         t.ifError(err, 'no errors');
         t.equal(stderr, '', 'no stderr');
         t.ok(stdout.indexOf('JSONBREAKFASTTIME\n') === 0);
-        t.equal(stdout.length, 647001);
+        t.equal(stdout.length, 647002);
         t.end();
     });
 });

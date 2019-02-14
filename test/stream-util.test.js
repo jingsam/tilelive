@@ -1,5 +1,5 @@
 var test = require('tape');
-var MBTiles = require('mbtiles');
+var MBTiles = require('@mapbox/mbtiles');
 var tilelive = require('..');
 var fs = require('fs');
 var path = require('path');
@@ -317,6 +317,17 @@ test('Info: deserialize', function(t) {
         var valid = err instanceof util.DeserializationError;
         t.ok(valid, 'unparsable data throws expected exception');
     }
+});
+
+test('serialize/deserialize corner cases', function(t) {
+    t.deepEqual(util.deserialize(''), null, 'deserialize interprets empty strings as null');
+    t.throws(function() {
+        util.serialize('boogie woogie');
+    }, /SerializationError: Invalid data/, 'serialize throws on invalid data');
+    t.throws(function() {
+        util.serialize('');
+    }, /SerializationError: Invalid data/, 'serialize throws on invalid data');
+    t.end();
 });
 
 test('Limit bounds', function(t) {

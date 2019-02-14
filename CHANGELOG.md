@@ -1,3 +1,25 @@
+## 6.0.0
+
+* Include trailing newline at the end of serialtiles to make append implementations simpler (https://github.com/mapbox/tilelive/pull/206)
+
+## 5.12.6
+
+* Updated several dependencies to the @mapbox namespaced version
+
+## 5.12.5
+
+* Update all CI tests to run on node v0.10, v4, and v6 [#194](https://github.com/mapbox/tilelive/issues/194)
+* Fix flaky round-trip de/serialize tests [#152](https://github.com/mapbox/tilelive/issues/152)
+
+## 5.12.4
+
+* support @mapbox namespaced tilelive packages for auto loading [#187](https://github.com/mapbox/tilelive/issues/187)
+
+## 5.12.3
+
+* Increase maxzoom to z30, based on [updated tilejson-spec](https://github.com/mapbox/tilejson-spec/pull/21)
+* Move to @mapbox/tilelive namespace
+
 ## 5.12.2
 
 * Allow transform-like streams to be used in the `transform` property

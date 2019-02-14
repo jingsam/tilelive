@@ -1,21 +1,78 @@
 # tilelive.js
 
-[![Coverage Status](https://coveralls.io/repos/mapbox/tilelive.js/badge.svg)](https://coveralls.io/r/mapbox/tilelive.js)
+[![Build Status](https://travis-ci.org/mapbox/tilelive.svg?branch=master)](https://travis-ci.org/mapbox/tilelive)
+[![Coverage Status](https://coveralls.io/repos/github/mapbox/tilelive/badge.svg?branch=master)](https://coveralls.io/github/mapbox/tilelive?branch=master)
 
 > This repository is a fork of `mapbox/tilelive`, but for CGCS2000.
 
-- Tilelive is a module to help interactions between tilelive source modules.
-- A tilelive source is an interface implemented by node modules that deal with reading and writing map tiles.
+Tilelive is designed for streaming map tiles from _sources_ (like custom geographic data formats) to _sinks_ (destinations, like file systems) by providing a consistent API. This repository enables the interaction between sources and sinks and is meant to be used in tandem with at least one Tilelive plugin. Tilelive plugins (modules) follow a consistent architecture (defined in [API.md](https://github.com/mapbox/tilelive/blob/master/API.md)) and implement the logic for generating and reading map tiles from a source or putting map tiles to a destination, or both.
 
-[![Build Status](https://secure.travis-ci.org/mapbox/tilelive.js.svg)](http://travis-ci.org/mapbox/tilelive.js)
+An example of a plugin that implements both reading (can be a source) and writing (can be a sink) is [tilelive-s3](https://github.com/mapbox/tilelive-s3).
 
-## Implementing modules
+An example use case for tilelive is creating vector tiles from a geojson file and putting them to Amazon S3. This can be accomplished by using [tilelive-omnivore](https://github.com/mapbox/tilelive-omnivore) as the source and using [tilelive-s3](https://github.com/mapbox/tilelive-s3) as the sink. Tilelive omnivore performs special operations for generating map tiles (using mapnik), whereas tilelive-s3 is able to properly connect to Amazon S3 for putting tiles in their proper location. The Tilelive module performs all of the getting and putting within `tilelive.copy`.
 
-- [node-mbtiles](https://github.com/mapbox/node-mbtiles)
-- [node-tilejson](https://github.com/mapbox/node-tilejson)
-- [tilelive-mapnik](https://github.com/mapbox/tilelive-mapnik)
-- [tilelive-vector](https://github.com/mapbox/tilelive-vector)
-- [tilelive-bridge](https://github.com/mapbox/tilelive-bridge)
+Basic tilelive steps:
+
+1. Require tilelive in your script, `var tilelive = require('@mapbox/tilelive')`
+1. Register custom protocols via plugins, `CustomTileSourcePlugin.registerProtocols(tilelive)` or `CustomTileSinkPlugin.registerProtocols(tilelive)`
+1. Load protocols using `tilelive.load`, this creates read and write streams
+1. Copy from source to destination (the creating of tiles is left to the plugin) using `tilelive.copy(source, sink, callback)`
+1. Once tiles are copied the streams are closed
+
+See [Usage](#Usage) for more details on the tilelive module API.
+
+## Awesome tilelive modules
+
+- [tilelive-vector](https://github.com/mapbox/tilelive-vector) - Implements the tilelive API for rendering mapnik vector tiles to raster images.
+- [tilelive-bridge](https://github.com/mapbox/tilelive-bridge) - Implements the tilelive API for generating mapnik vector tiles from traditional mapnik datasources.
+- [tilelive-mapnik](https://github.com/mapbox/tilelive-mapnik) - mapnik renderer backend for tilelive.
+- [tilelive-s3](https://github.com/mapbox/tilelive-s3) - Extends TileJSON for S3-specific tasks.
+- [tilelive-file](https://github.com/mapbox/tilelive-file) - tilelive.js adapter for reading from the filesystem.
+- [tilelive-postgis](https://github.com/stepankuzmin/tilelive-postgis) - A tilelive source for outputting PBF-encoded tiles from PostGIS.
+- [tilelive-tmsource](https://github.com/mojodna/tilelive-tmsource) - A tilelive provider for TM2 sources.
+- [tilelive-cache](https://github.com/mojodna/tilelive-cache) - A caching wrapper for tilelive.js
+- [tilelive-overlay](https://github.com/mapbox/tilelive-overlay) - Render GeoJSON features with simplestyle styles in a tilelive pipeline.
+- [tilelive-tmstyle](https://github.com/mojodna/tilelive-tmstyle) - A tilelive provider for tmstyle sources.
+- [tilelive-http](https://github.com/mojodna/tilelive-http) - An HTTP source for tilelive.
+- [node-mbtiles](https://github.com/mapbox/node-mbtiles) - A mbtiles renderer and storage backend for tilelive.
+- [tl](https://github.com/mojodna/tl) - An alternate command line interface to tilelive.
+- [tilelive-omnivore](https://github.com/mapbox/tilelive-omnivore) - Implements the tilelive api for a variety of data sources.
+- [tilelive-xray](https://github.com/mojodna/tilelive-xray) - Tilelive vector tile visualization.
+- [tilelive-merge](https://github.com/mojodna/tilelive-merge) - A tilelive source that merges sources.
+- [tilelive-streaming](https://github.com/mojodna/tilelive-streaming) - Streaming functionality for tilelive modules.
+- [tilelive-redis](https://github.com/mapbox/tilelive-redis) - Redis wrapping source for tilelive.
+- [tilelive-modules](https://github.com/mojodna/tilelive-modules) - A listing of known tilelive modules.
+- [tilelive-decorator](https://github.com/mapbox/tilelive-decorator) - Load vector tiles from a tilelive source and decorate them with properties from redis.
+- [tilelive-blend](https://github.com/mojodna/tilelive-blend) - A tilelive provider that blends.
+- [tilelive-carto](https://github.com/mojodna/tilelive-carto) - A Carto style source for tilelive
+- [mongotiles](https://github.com/vsivsi/mongotiles) - mongotiles is a tilelive backend plug-in for MongoDB GridFS.
+- [tilelive-rasterpbf](https://github.com/mojodna/tilelive-rasterpbf) - A tilelive source for outputting PBF-encoded rasters from PostGIS.
+- [tilelive-memcached](https://github.com/mapbox/tilelive-memcached) - A memcached wrapping source for tilelive.
+- [tilelive-csvin](https://github.com/mojodna/tilelive-csvin) - A streaming tilelive source for CSV inputs.
+- [tilelive-tms](https://github.com/oscarfonts/tilelive-tms) - A tilelive.js adapter for reading from a TMS service.
+- [tilelive-multicache](https://github.com/mapbox/tilelive-multicache) - Module for adding a caching layer in front a tilelive source.
+- [tilelive-cardboard](https://github.com/mapbox/tilelive-cardboard) - Renders vector tiles from a cardboard dataset.
+- [tilelive-utfgrid](https://github.com/mojodna/tilelive-utfgrid) - A tilelive provider that treats grids as tiles
+- [tilelive-arcgis](https://github.com/FuZhenn/tilelive-arcgis) - A tilelive.js adapter for ArcGIS tile caches.
+- [tilelive-mapbox](https://github.com/mojodna/tilelive-mapbox) - A tilelive.js source for mapbox:// URIs.
+- [tilelive-solid](https://github.com/mojodna/tilelive-solid) - A tilelive provider that generates solid colored tiles.
+- [tilelive-raster](https://github.com/mojodna/tilelive-raster) - A tilelive source for simple rasters, both local and remote.
+- [tilelive-null](https://github.com/mojodna/tilelive-null) - A noop sink for tilelive.
+- [tilelive-noop](https://github.com/mapbox/tilelive-noop) - A no-op tilelive source.
+- [tilelive-csv](https://github.com/mojodna/tilelive-csv) - PBF → CSV with tilelive.
+- [tilelive-error](https://github.com/mojodna/tilelive-error) - Avoid repeating error-prone initialization.
+- [tilelive-lambda](https://github.com/mojodna/tilelive-lambda) - AWS Lambda source for tilelive.
+- [tilelive-cartodb](https://github.com/mojodna/tilelive-cartodb) - A tilelive source for CartoDB.
+- [cdbtiles](https://github.com/vsivsi/cdbtiles) - A tilelive backend plug-in for CouchDB.
+- [node-tilejson](https://github.com/mapbox/node-tilejson) - Tile source backend for online tile sources.
+- [tilelive-foxgis](https://github.com/FoxGIS/tilelive-foxgis) - A tilelive plugin to serve tiles with mongodb
+- [tessera](https://github.com/mojodna/tessera) - A tilelive-based tile server.
+
+## Ecosytem of tilelive
+![image](https://cloud.githubusercontent.com/assets/1522494/16645056/a8f8fff2-4453-11e6-8ba7-b9aff033f2cd.png)
+
+
+
 
 ## Usage
 
@@ -23,7 +80,7 @@ Tilelive doesn't ship with any implementing modules by default. To register a mo
 
     require('[implementation]').registerProtocols(tilelive);
 
-* `tilelive.list(source, callback)`: Lists all tilesets in a directory. `source` is a folder that is used by registered implementations to search for individual tilesets. `callback` receives an error object (or `null`) and a hash hash with keys being Tilestore IDs and values being Tilestore URIs. Example:
+* `tilelive.list(source, callback)`: Lists all tilesets in a directory. `source` is a folder that is used by registered implementations to search for individual tilesets. `callback` receives an error object (or `null`) and a hash with keys being Tilestore IDs and values being Tilestore URIs. Example:
 
 ```javascript
 {
